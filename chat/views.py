@@ -1,3 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
-# Create your views here.
+def login(request):
+    
+        
+    return render(request, "login.html")
+
+
+def chatbox(request):
+    return render(request, "chatbox.html")

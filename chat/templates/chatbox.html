@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static%}
+    <title>Chatbot with Dual Sidebars</title>
+    <link
+        rel="stylesheet"
+        type="text/css"
+        href="{% static 'main.css' %}"
+        />
+</head>
+<body>
+    <nav class="navbar">
+        <h1>AI Study Buddy</h1>
+    </nav>
+
+    <div class="container">
+        <div class="sidebar" id="left-sidebar">
+            <h3>Menu</h3>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Settings</a></li>
+                <li><a href="#">Help</a></li>
+            </ul>
+        </div>
+
+        <div class="container">
+            <div class="sidebar" id="conversations-sidebar">
+                <h3>Previous Conversations</h3>
+                <ul class="conversations-list">
+                    <li><a href="#">Conversation 1 - Order Inquiry</a></li>
+                    <li><a href="#">Conversation 2 - Technical Support</a></li>
+                    <li><a href="#">Conversation 3 - Shipping Details</a></li>
+                    <!-- More dummy conversations -->
+                </ul>
+            </div>
+
+        <div class="chat-window">
+            <div class="message bot-message">
+                Welcome to our Chatbot! How can I assist you today?
+            </div>
+            <div class="message user-message">
+                Hi there! I need some help with my account.
+            </div>
+            <!-- More messages here -->
+
+            <div class="chat-input-area">
+                <input type="text" id="user-input" placeholder="Type your message here..." />
+                <button id="send-button">Send</button>
+            </div>
+        </div>
+
+        <div class="sidebar" id="right-sidebar">
+            <h3>Topic Reference</h3>
+            <div class="accordion">
+                <div class="accordion-item">
+                    <button class="accordion-button" onclick="toggleAccordion(event, 'topic1')">Topic 1</button>
+                    <div class="panel" id="topic1">
+                        <label><input type="checkbox" name="pdf1" /> <a href="path-to-pdf-1.pdf" target="_blank">PDF 1</a></label>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <button class="accordion-button" onclick="toggleAccordion(event, 'topic2')">Topic 2</button>
+                    <div class="panel" id="topic2">
+                        <label><input type="checkbox" name="pdf2" /> <a href="path-to-pdf-2.pdf" target="_blank">PDF 2</a></label>
+                    </div>
+                </div>
+                <!-- Add more accordion items as needed -->
+            </div>
+            <button id="load-pdf-button">Load PDF</button>
+            <!-- Container to display the selected PDF -->
+            <iframe id="pdf-display" style="display:none; width:100%; height:400px;"></iframe>
+
+            <div id="pdf-modal" class="modal">
+                <div class="modal-content">
+                    <span class="close-button">&times;</span>
+                    <h2>Select a PDF by Course</h2>
+                    
+                    <div class="course-group">
+                        <h3>Course 1</h3>
+                        <ul>
+                            <li><button class="pdf-select" data-pdf-src="path-to-course1-pdf1.pdf">PDF 1</button></li>
+                            <li><button class="pdf-select" data-pdf-src="path-to-course1-pdf2.pdf">PDF 2</button></li>
+                        </ul>
+                    </div>
+
+                    <div class="course-group">
+                        <h3>Course 2</h3>
+                        <ul>
+                            <li><button class="pdf-select" data-pdf-src="path-to-course2-pdf1.pdf">PDF 3</button></li>
+                            <li><button class="pdf-select" data-pdf-src="path-to-course2-pdf2.pdf">PDF 4</button></li>
+                        </ul>
+                    </div>
+
+                    <!-- More courses and PDFs as needed -->
+                </div>
+
+        </div>
+    </div>
+
+    <script src="{% static 'main.js' %}"></script>
+</body>
+</html>
