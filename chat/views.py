@@ -16,7 +16,3 @@ def get_chatbot_response(request):
     bot_response = f"Simulated ChatGPT response to '{user_message}'"
     
     return JsonResponse({'bot_response': bot_response})
-
-
-def room(request, room_name):
-    return render(request, "room.html", {"room_name": room_name})
