@@ -45,8 +45,15 @@
             <!-- More messages here -->
 
             <div class="chat-input-area">
-                <input type="text" id="user-input" placeholder="Type your message here..." />
-                <button id="send-button">Send</button>
+    
+                    <!-- <form method="POST"> -->
+                        <!-- {% csrf_token %} -->
+                        <input type="text" name="message" id="user-input" placeholder="Type your message here..." />
+                        <button id="send-button">Send</button>  
+                    <!-- </form> -->
+                    
+            
+                <div id="username" style="display: none;">{{ username }}</div>
             </div>
         </div>
 
@@ -99,5 +106,8 @@
     </div>
 
     <script src="{% static 'main.js' %}"></script>
+    <script src="{% static 'chat.js' %}"></script>
+    <!-- <script src="{% static 'chatt.js' %}"></script> -->
+
 </body>
 </html>
