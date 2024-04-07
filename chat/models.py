@@ -4,7 +4,7 @@ from django.db import models
 from django.contrib.auth import get_user_model
 
 from langchain_community.document_loaders import PyPDFLoader
-from chat.utils.helpers import get_openai_embeddings
+from chat.utils.helpers import get_openai_embeddings, download_file
 
 
 class UserProfile(models.Model):
@@ -17,6 +17,9 @@ class Course(models.Model):
     external_id = models.CharField(unique=True, max_length=20)
     name = models.CharField(max_length=300)
 
+    def __str__(self):
+        return self.name
+
 
 class CourseFile(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
@@ -25,23 +28,27 @@ class CourseFile(models.Model):
     url = models.URLField()
     pages = models.BinaryField(blank=True, null=True)
 
-    def generate_pages_from_file(self, file_path):
-        if Path(file_path).exists():
-            loader = PyPDFLoader(file_path, extract_images=True)
-            pages = loader.load_and_split()
-            self.pages = pickle.dumps(pages)
-            self.save(update_fields=['pages'])
+    def generate_pages(self):
+        if not self.pages:
+            file_path = download_file(self.url, self.name)
+                
+            if Path(file_path).exists():
+                loader = PyPDFLoader(file_path, extract_images=True)
+                pages = loader.load_and_split()
+                self.pages = pickle.dumps(pages)
+                self.save(update_fields=['pages'])
 
     def get_pages(self):
         if self.pages:
             return pickle.loads(self.pages)
 
+    def __str__(self):
+        return self.name
 
 class Conversation(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     title = models.CharField(max_length=300)
     vector_index = models.BinaryField(null=True, blank=True)
-
 
     def _create_vector_from_docs(self, documents):
         from langchain_community.vectorstores import FAISS
@@ -76,7 +83,7 @@ class Conversation(models.Model):
         for course_file in files:
             pages = course_file.get_pages()
             if isinstance(pages, list):
-                documents.extend(course_file.get_pages)
+                documents.extend(pages)
             else:
                 documents.append(pages)
             
@@ -91,4 +98,9 @@ class Conversation(models.Model):
 
 class Message(models.Model):
     conversation = models.ForeignKey(Conversation, on_delete=models.CASCADE)
-    text = models.CharField(max_length=5000)  # max_length also dictates the limit for tokens in a message
+    text = models.CharField(max_length=50000)  # max_length also dictates the limit for tokens in a message
+    is_human = models.BooleanField(null=True, default=True)
+
+    def __str__(self):
+        return self.text
+

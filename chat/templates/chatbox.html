@@ -30,13 +30,13 @@
         <div id="conversation-window">
             <!-- PREVIOUS CONVERSATIONS -->
             <div id="conversations-sidebar">
+                <h3>New Study</h3>
+                <h3>  <a href=""><button class="previous-chats">New Chat</button></a> </h3>
 
                 <ul class="conversations-list">
-                    <h3>New Study</h3>
-                    <h3>  <a href={% url 'chat_interface'%}><button class="previous-chats">Start new study</button></a> </h3>
-                    <h3>Precious Studies</h3>
-                    {% for chat in conversations %}
-                        <li><a href="#"><button class="previous-chats"> {{chat.title}} </button></a> </li>
+                    <h3>Previous Studies</h3>
+                    {% for chat in chats %}
+                        <li><a href="{% url 'chat_detail' chat_id=chat.id %}">{{ chat.title }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -46,18 +46,28 @@
             <!-- CHAT WINDOW -->
             <div class="chat-window-container"> 
                 <div class="chat-window">
-                    <div class="message bot-message">
-                        Welcome to our Chatbot! How can I assist you today?
-                    </div>
-                    <div class="message user-message">
-                        Hi there! I need some help with my account.
-                    </div>
-                
-                <!-- More messages here -->
+                    {% for message in chat_messages %}
+                            {% if message.is_human %}
+                                <div class="message user-message">
+                                    {{ message.text }}
+                                </div>
+                            {% endif %}
+
+                            {% if not message.is_human %}
+                                <div class="message bot-message">
+                                    {{ message.text }}
+                                </div>
+                            {% endif %}
+                    {% endfor %}
+                </div>
+                <div class="chat-input-area">
+                    <input type="text" id="user-input" placeholder="Type your message here..." />
+                    <button id="send-button">Send</button>
+                </div>
             </div>
             <div class="chat-input-area">
-            <input type="text" id="user-input" placeholder="Type your message here..." />
-            <button id="send-button">Send</button>
+                <input type="text" id="user-input" placeholder="Type your message here..." />
+                <button id="send-button">Send</button>
             </div>
 
             </div>

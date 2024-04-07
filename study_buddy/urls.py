@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from chat.views import login, chat_interface, load_canvas_course_files, tokenize_selected_files, get_chatbot_response
+from chat.views import (
+    login, chat_interface,
+    load_canvas_course_files,
+    tokenize_selected_files,
+    get_chatbot_response,
+    chat_detail
+)
 
 
 admin.site.site_url = '/chat'
@@ -25,8 +31,9 @@ admin.site.site_header = 'AI Study Buddy'
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", login),
-    path("chat/", chat_interface, name="chat_interface"),
+    path("chat/", chat_interface),
+    path("chat/<int:chat_id>", chat_detail, name='chat_detail'),
     path("load-course-files/", load_canvas_course_files),
-    path("tokenize-files/", tokenize_selected_files),
+    path("chat/tokenize-files/", tokenize_selected_files),
     path('chat/get_chatbot_response/', get_chatbot_response, name='get_chatbot_response'),
 ]

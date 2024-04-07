@@ -1,10 +1,22 @@
 import json
+import logging
 
 from django.shortcuts import render
 from chat.utils.canvas_client import get_canvas_client
 from django.http import JsonResponse
+from django.core.serializers import serialize
+from django.conf import settings
 
-from chat.models import Course, CourseFile, Conversation
+# llm imports
+from langchain_openai import ChatOpenAI
+from langchain_core.messages import HumanMessage, AIMessage
+from langchain.chains import create_history_aware_retriever
+from langchain_core.prompts import MessagesPlaceholder
+from langchain_core.prompts import ChatPromptTemplate
+from langchain.chains.combine_documents import create_stuff_documents_chain
+from langchain.chains import create_retrieval_chain
+
+from chat.models import Course, CourseFile, Conversation, Message
 
 
 
@@ -43,11 +55,39 @@ def load_canvas_course_files(request):
 
 
 def tokenize_selected_files(request):
-    return JsonResponse({})
+    chat_id = request.GET.get("chat_id")
+    file_ids = request.GET.get('file_ids')
+    
+    if isinstance(file_ids, str):
+        file_ids = [int(id) for id in file_ids.split(",")]
+
+    files = CourseFile.objects.filter(id__in=file_ids)
+
+    if not files:
+        return JsonResponse({"error": "Files not available"}, status=400)
+
+    for file in files:
+        if not file.pages:
+            file.generate_pages()
+
+        file.refresh_from_db()
+        if not file.pages:
+            continue
+    
+    if chat_id in ["new", None]:
+        chat = Conversation.objects.create(
+            user=request.user,
+            title="temp_title"
+        )
+    else:
+        chat  = Conversation.objects.get(id=int(chat_id))
+    
+    chat.build_index_with_course_files(files)
+    return JsonResponse({"response": "index building complete"})
 
 
 def chat_interface(request):
-    convos = Conversation.objects.filter(user=request.user).values("id", "title")
+    chats = Conversation.objects.filter(user=request.user).values("id", "title")
     courses = Course.objects.prefetch_related('coursefile_set').filter(user=request.user).all()
 
     course_files = []
@@ -71,16 +111,19 @@ def chat_interface(request):
         course_files.append(course_dict)
 
     context = {
-        "conversations": convos,
-        "messages": [],
+        "chats": chats,
+        "chat_messages": [],
         "course_files": course_files,
     }
     return render(request, "chatbox.html", context=context)
 
 
 def chat_detail(request, chat_id):
-    convos = Conversation.objects.filter(user=request.user).values("id", "title")
+    all_chats = Conversation.objects.filter(user=request.user).values("id", "title")
+    current_chat = Conversation.objects.get(id=chat_id) #TODO make better
     courses = Course.objects.prefetch_related('coursefile_set').filter(user=request.user).all()
+
+    messages = [{'text': msg.text, "is_human": msg.is_human} for msg in current_chat.message_set.order_by('id')]
 
     course_files = []
 
@@ -103,15 +146,87 @@ def chat_detail(request, chat_id):
         course_files.append(course_dict)
 
     context = {
-        "conversations": convos,
-        "current_conversation_messages": [],
+        "chats": all_chats,
+        "chat_messages": messages,
         "course_files": course_files,
     }
     return render(request, "chatbox.html", context=context)
 
 
 def get_chatbot_response(request):
-    user_message = "ChatGPT"
-    bot_response = f"Simulated ChatGPT response to '{user_message}'"
+    chat_id = request.GET.get("chat_id")
+    user_input = request.GET.get("input_message")
+
+    if not chat_id or not user_input:
+        return JsonResponse({"error": "missing chat id or user input"}, status=400)
     
-    return JsonResponse({'bot_response': bot_response})
+    chat = Conversation.objects.get(id=chat_id)
+    
+    #save user input
+    Message.objects.create(conversation=chat, text=user_input, is_human=True)
+
+    vector  = None
+    chat_history = None
+
+    if chat.vector_index:
+        vector = chat.get_vector_index()
+
+    if chat.message_set.exists():
+        chat_history = [
+            HumanMessage(content=msg.text) if msg.is_human else \
+                AIMessage(content=msg.text) for msg in chat.message_set.order_by('id')
+        ]
+
+    retriever = None
+    if vector:
+        retriever = vector.as_retriever()
+
+
+    # CONVERSATION RETRIEVAL CHAIN
+    llm = ChatOpenAI(openai_api_key=settings.OPENAI_API_KEY)
+
+    # First we need a prompt that we can pass into an LLM to generate this search query
+    if retriever:
+        retriever_prompt = ChatPromptTemplate.from_messages([
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("user", "{input}"),
+            ("user", "Given the above conversation, generate a search query to look up to get information relevant to the conversation")
+        ])
+        retriever_chain = create_history_aware_retriever(llm, retriever, retriever_prompt)
+
+        chat_prompt = ChatPromptTemplate.from_messages([
+            ("system", "Answer the user's questions based on the below context:\n\n{context}"),
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("user", "{input}"),
+        ])
+
+    if retriever:
+        chat_chain = create_stuff_documents_chain(llm, chat_prompt)
+        
+        query_chain = create_retrieval_chain(retriever_chain, chat_chain)
+
+        query_response = query_chain.invoke({
+                "chat_history": chat_history,
+                "input": user_input
+            })
+        response = query_response["answer"]
+        
+    else:
+        chat_prompt = ChatPromptTemplate.from_messages([
+            MessagesPlaceholder(variable_name="chat_history"),
+            ("user", "{input}"),
+        ])
+
+        query_chain = chat_prompt | llm 
+        query_response = query_chain.invoke({
+                "chat_history": chat_history,
+                "input": user_input
+            })
+        response = query_response.content
+
+    if response:
+         #save AI response
+        Message.objects.create(conversation=chat, text=response, is_human=False)
+
+        return JsonResponse({'response': response})
+    return JsonResponse({"response": "Sorry, Your AI is quite today"})
