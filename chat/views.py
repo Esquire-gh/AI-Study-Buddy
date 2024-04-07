@@ -1,11 +1,12 @@
 import json
 import logging
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from chat.utils.canvas_client import get_canvas_client
 from django.http import JsonResponse
 from django.core.serializers import serialize
 from django.conf import settings
+from django.urls import reverse
 
 # llm imports
 from langchain_openai import ChatOpenAI
@@ -157,10 +158,16 @@ def get_chatbot_response(request):
     chat_id = request.GET.get("chat_id")
     user_input = request.GET.get("input_message")
 
-    if not chat_id or not user_input:
-        return JsonResponse({"error": "missing chat id or user input"}, status=400)
+    if not user_input:
+        return JsonResponse({"error": "missing user input"}, status=400)
     
-    chat = Conversation.objects.get(id=chat_id)
+    if not chat_id:
+        chat = Conversation.objects.create(
+            user=request.user,
+            title="fresh chat created"
+        )
+    else:
+        chat = Conversation.objects.get(id=chat_id)
     
     #save user input
     Message.objects.create(conversation=chat, text=user_input, is_human=True)
@@ -228,5 +235,21 @@ def get_chatbot_response(request):
          #save AI response
         Message.objects.create(conversation=chat, text=response, is_human=False)
 
+        if not chat_id:
+            return JsonResponse(
+                {
+                    "response": response,
+                    "redirect": reverse("chat_detail", kwargs={"chat_id": chat.id})
+                })
+
         return JsonResponse({'response': response})
     return JsonResponse({"response": "Sorry, Your AI is quite today"})
+
+
+def new_chat(request):
+    chat = Conversation.objects.create(
+        user=request.user,
+        title="new_chat_temp_name"
+    )
+
+    return redirect('chat_detail', chat_id=chat.id)

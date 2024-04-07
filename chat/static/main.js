@@ -8,10 +8,6 @@ function toggleAccordion(event, panelId) {
     }
 }
 
-// // Close the modal
-// document.getElementsByClassName('close-button')[0].onclick = function() {
-//     document.getElementById('pdf-modal').style.display = 'none';
-// };
 
 // load courses and files from canvas
 $(document).ready(function() {
@@ -32,21 +28,20 @@ $(document).ready(function() {
 
 
     $("#update-convo-context").click(function() {
-        // var path = window.location.pathname;
-        // // Split the path into segments
-        // var segments = path.split('/');
-        // // Get the chat_id
-        // var chat_id = segments.pop();
+        var path = window.location.pathname;
+        // Split the path into segments
+        var segments = path.split('/');
+        // Get the chat_id
+        var chat_id = segments.pop();
 
         // get all files selected and get their ids
         var selectedFiles = $(".select_files:checked").map(function() {
             return this.value;
         }).get()
 
-        var convoId = "new";
-
-        var chat_id = 1;
-
+        if (chat_id == "chat" || chat_id == "") {
+            chat_id = "new"
+        }
         var endpoint = (input, chat_id) => `tokenize-files?file_ids=${input}&chat_id=${chat_id}`;
 
        $.ajax({
@@ -62,6 +57,7 @@ $(document).ready(function() {
        })
     });
 });
+
 
 document.getElementById('load-pdf-button').addEventListener('click', function() {
     // Show the beachball
@@ -81,6 +77,3 @@ document.getElementById('load-pdf-button').addEventListener('click', function() 
         
     }, 3000);
 });
-
-
-

@@ -25,13 +25,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function getChatbotResponse(userInput) {
-        // var path = window.location.pathname;
-        // // Split the path into segments
-        // var segments = path.split('/');
-        // // Get the chat_id
-        // var chat_id = segments.pop();
+        var path = window.location.pathname;
+        // Split the path into segments
+        var segments = path.split('/');
+        // Get the chat_id
+        var chat_id = segments.pop();
 
-        var chat_id = 1
         var user_input = encodeURIComponent(userInput)
 
         endpoint = (chat_id, user_input) => `get_chatbot_response/?chat_id=${chat_id}&input_message=${user_input}`
@@ -39,13 +38,15 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch(endpoint(chat_id, user_input))
         .then(response => response.json())
         .then(data => {
-                // Display the bot's response returned by the Django view
-        displayBotMessage(data.response);
+            // Display the bot's response returned by the Django view
+            displayBotMessage(data.response);
+
+            if (data.redirect) {
+                window.location.replace(data.redirect)
+            }
         })
         .catch(error => {console.log("Error sending message")});
-        
 
-        // displayBotMessage(botResponse);
     }
 
     function displayBotMessage(message) {

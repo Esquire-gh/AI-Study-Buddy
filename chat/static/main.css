@@ -48,6 +48,7 @@ body {
     position: relative;
     height: 80vh;
     overflow: scroll;
+    flex-basis: 50%;
 }
 
 /* Additional styling as needed */
@@ -74,7 +75,7 @@ body {
     flex-direction: column;
     flex-basis: 25%;
     overflow: scroll;
-   
+    flex-grow: 1;
 }
 
 
