@@ -82,4 +82,7 @@ document.getElementById("update-convo-context").addEventListener('click', functi
     }, 3000);
 });
 
+var chatHistory = document.getElementById("messageBody");
+chatHistory.scrollTop = chatHistory.scrollHeight;
+
 

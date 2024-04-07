@@ -15,16 +15,6 @@
     </nav>
 
     <div class="container">
-        <!-- LEFT SIDE BAR -->
-        <div id="left-sidebar">
-            <h3>Menu</h3>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">Settings</a></li>
-                <li><a href="#">Help</a></li>
-            </ul>
-        </div>
-        <!-- END OF LEFT SIDE BAR -->
 
         <!-- CONVERSATION WINDOW -->
         <div id="conversation-window">
@@ -36,8 +26,12 @@
                 <ul class="conversations-list">
                     <h3>Previous Studies</h3>
                     {% for chat in chats %}
+                        {% if chat.id == current_chat_id %}
+                        <li style="background-color: beige;"><a href="{% url 'chat_detail' chat_id=chat.id %}">{{ chat.title }}</a></li>
+                        {% else %}
                         <li><a href="{% url 'chat_detail' chat_id=chat.id %}">{{ chat.title }}</a></li>
-                    {% endfor %}
+                        {% endif %}
+                        {% endfor %}
                 </ul>
             </div>
             <!-- END OF PREVIOUS CONVERSATIONS -->
@@ -45,7 +39,7 @@
 
             <!-- CHAT WINDOW -->
             <div class="chat-window-container"> 
-                <div class="chat-window">
+                <div id="messageBody" class="chat-window">
                     {% for message in chat_messages %}
                             {% if message.is_human %}
                                 <div class="message user-message">

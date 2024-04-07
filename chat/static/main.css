@@ -46,7 +46,7 @@ body {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
     position: relative;
-    height: 80vh;
+    height: 90%;
     overflow: scroll;
     flex-basis: 50%;
 }

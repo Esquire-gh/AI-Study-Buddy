@@ -115,6 +115,7 @@ def chat_interface(request):
         "chats": chats,
         "chat_messages": [],
         "course_files": course_files,
+        "current_chat_id": None
     }
     return render(request, "chatbox.html", context=context)
 
@@ -150,6 +151,7 @@ def chat_detail(request, chat_id):
         "chats": all_chats,
         "chat_messages": messages,
         "course_files": course_files,
+        "current_chat_id": current_chat.id
     }
     return render(request, "chatbox.html", context=context)
 
