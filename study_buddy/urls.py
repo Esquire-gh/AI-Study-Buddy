@@ -25,7 +25,7 @@ admin.site.site_header = 'AI Study Buddy'
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", login),
-    path("chat/", chat_interface),
+    path("chat/", chat_interface, name="chat_interface"),
     path("load-course-files/", load_canvas_course_files),
     path("tokenize-files/", tokenize_selected_files),
     path('chat/get_chatbot_response/', get_chatbot_response, name='get_chatbot_response'),

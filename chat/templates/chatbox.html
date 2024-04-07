@@ -30,10 +30,13 @@
         <div id="conversation-window">
             <!-- PREVIOUS CONVERSATIONS -->
             <div id="conversations-sidebar">
-                <h3>Previous Chats</h3>
+
                 <ul class="conversations-list">
+                    <h3>New Study</h3>
+                    <h3>  <a href={% url 'chat_interface'%}><button class="previous-chats">Start new study</button></a> </h3>
+                    <h3>Precious Studies</h3>
                     {% for chat in conversations %}
-                        <li><a href="#">{{ chat.title }}</a></li>
+                        <li><a href="#"><button class="previous-chats"> {{chat.title}} </button></a> </li>
                     {% endfor %}
                 </ul>
             </div>
@@ -41,25 +44,32 @@
 
 
             <!-- CHAT WINDOW -->
-            <div class="chat-window">
-                <div class="message bot-message">
-                    Welcome to our Chatbot! How can I assist you today?
-                </div>
-                <div class="message user-message">
-                    Hi there! I need some help with my account.
-                </div>
+            <div class="chat-window-container"> 
+                <div class="chat-window">
+                    <div class="message bot-message">
+                        Welcome to our Chatbot! How can I assist you today?
+                    </div>
+                    <div class="message user-message">
+                        Hi there! I need some help with my account.
+                    </div>
+                
                 <!-- More messages here -->
-
-                <div class="chat-input-area">
-                    <input type="text" id="user-input" placeholder="Type your message here..." />
-                    <button id="send-button">Send</button>
-                </div>
             </div>
+            <div class="chat-input-area">
+            <input type="text" id="user-input" placeholder="Type your message here..." />
+            <button id="send-button">Send</button>
+            </div>
+
+            </div>
+            
             <!-- END OF CHAT WINDOW -->
 
             <!-- CHAT CONTEXT LOADER -->
             <div class="sidebar" id="right-sidebar">
                 <button id="load-pdf-button">Load Files from CANVAS</button>
+                <div id="beachball-container" class="hidden">
+                    <div class="beachball"></div>
+                </div>
                 <br>
 
                 <h3>Course Files</h3>
@@ -69,10 +79,10 @@
                             <button class="accordion-button" onclick="toggleAccordion(event, '{{ course.course_name }}')">{{ course.course_name }}</button>
                                 <div class="panel" id="{{ course.course_name }}">
                                     {% for file in course.files %}
-                                    <div style="margin-bottom: 2%;">
+                                    <div style="margin-bottom: 2%; overflow: hidden;">
                                         <label>
                                             <input type="checkbox" value="{{file.id }}" class="select_files" />
-                                            <a style="text-decoration: none;" href="{{ file.url }}" target="_blank">{{ file.name }}</a>
+                                            <a style="text-decoration: none;" href="{{ file.url }}" target="_blank">{{ file.name|truncatechars:35 }}</a>
                                         </label>
                                     </div>
                                     {% endfor %}
