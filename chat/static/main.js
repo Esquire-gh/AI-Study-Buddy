@@ -62,3 +62,25 @@ $(document).ready(function() {
        })
     });
 });
+
+document.getElementById('load-pdf-button').addEventListener('click', function() {
+    // Show the beachball
+    document.getElementById('beachball-container').classList.remove('hidden');
+    document.getElementById("load-pdf-button").disabled = true
+    document.getElementById("send-button").disabled = true
+    document.getElementById("update-convo-context").disabled = true
+   
+
+    // Simulate loading process (e.g., fetching data)
+    setTimeout(() => {
+        // Hide the beachball after 3 seconds
+        document.getElementById('beachball-container').classList.add('hidden');
+        document.getElementById("load-pdf-button").disabled = false
+        document.getElementById("send-button").disabled = false
+        document.getElementById("update-convo-context").disabled = false
+        
+    }, 3000);
+});
+
+
+
