@@ -28,14 +28,19 @@ document.addEventListener('DOMContentLoaded', function() {
         var path = window.location.pathname;
         // Split the path into segments
         var segments = path.split('/');
+        segments.pop()
         // Get the chat_id
         var chat_id = segments.pop();
 
+        if (chat_id == "chat") {
+            chat_id = ""
+        }
+
         var user_input = encodeURIComponent(userInput)
 
-        endpoint = (chat_id, user_input) => `get_chatbot_response/?chat_id=${chat_id}&input_message=${user_input}`
+        endpoint = (id, input) => `/get_chatbot_response/?chat_id=${id}&input_message=${input}`
 
-        fetch(endpoint(chat_id, user_input))
+        fetch( window.location.origin +  endpoint(chat_id, user_input))
         .then(response => response.json())
         .then(data => {
             // Display the bot's response returned by the Django view
@@ -46,7 +51,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         })
         .catch(error => {console.log("Error sending message")});
-
     }
 
     function displayBotMessage(message) {

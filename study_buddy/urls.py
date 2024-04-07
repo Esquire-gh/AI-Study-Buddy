@@ -36,6 +36,6 @@ urlpatterns = [
     path("chat/<int:chat_id>/", chat_detail, name='chat_detail'),
     path("load-course-files/", load_canvas_course_files),
     path("tokenize-files/", tokenize_selected_files),
-    path('chat/get_chatbot_response/', get_chatbot_response, name='get_chatbot_response'),
+    path('get_chatbot_response/', get_chatbot_response, name='get_chatbot_response'),
     path("new_chat/", new_chat, name="new_chat"),
 ]
