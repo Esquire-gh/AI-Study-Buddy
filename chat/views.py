@@ -3,7 +3,6 @@ import json
 from django.shortcuts import render
 from chat.utils.canvas_client import get_canvas_client
 from django.http import JsonResponse
-from django.core.serializers import serialize
 
 from chat.models import Course, CourseFile, Conversation
 
@@ -109,3 +108,10 @@ def chat_detail(request, chat_id):
         "course_files": course_files,
     }
     return render(request, "chatbox.html", context=context)
+
+
+def get_chatbot_response(request):
+    user_message = "ChatGPT"
+    bot_response = f"Simulated ChatGPT response to '{user_message}'"
+    
+    return JsonResponse({'bot_response': bot_response})
