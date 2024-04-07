@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.core.serializers import serialize
 from django.conf import settings
 from django.urls import reverse
+from django.contrib.auth.decorators import login_required
 
 # llm imports
 from langchain_openai import ChatOpenAI
@@ -25,7 +26,7 @@ from chat.utils.helpers import get_course_files
 def login(request):
     return render(request, "login.html")
 
-
+@login_required
 def load_canvas_course_files(request):
     canvas_client = get_canvas_client(request.user)
     course_reponse = canvas_client.courses()
@@ -56,6 +57,7 @@ def load_canvas_course_files(request):
     return JsonResponse({})
 
 
+@login_required
 def tokenize_selected_files(request):
     chat_id = request.GET.get("chat_id")
     file_ids = request.GET.get('file_ids')
@@ -90,7 +92,7 @@ def tokenize_selected_files(request):
     chat.build_index_with_course_files(files)
     return JsonResponse({"response": "index building complete"})
 
-
+@login_required
 def chat_interface(request):
     chats = Conversation.objects.filter(user=request.user).order_by("-id").values("id", "title")
     courses = Course.objects.prefetch_related('coursefile_set').filter(user=request.user).all()
@@ -105,7 +107,7 @@ def chat_interface(request):
     }
     return render(request, "chatbox.html", context=context)
 
-
+@login_required
 def chat_detail(request, chat_id):
     all_chats = Conversation.objects.filter(user=request.user).order_by("-id").values("id", "title")
     current_chat = Conversation.objects.get(id=chat_id) #TODO make better
@@ -124,6 +126,7 @@ def chat_detail(request, chat_id):
     return render(request, "chatbox.html", context=context)
 
 
+@login_required
 def get_chatbot_response(request):
     chat_id = request.GET.get("chat_id")
     user_input = request.GET.get("input_message")
@@ -219,6 +222,7 @@ def get_chatbot_response(request):
     return JsonResponse({"response": "Sorry, Your AI is quite today"})
 
 
+@login_required
 def new_chat(request):
     chat = Conversation.objects.create(
         user=request.user,

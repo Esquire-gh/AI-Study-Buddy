@@ -135,3 +135,8 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 OPENAI_API_KEY = env('OPENAI_API_KEY')
+
+
+LOGIN_URL = '/admin/login/'
+LOGIN_REDIRECT_URL = '/chat'
+LOGIN_REDIRECT_URL = '/'
