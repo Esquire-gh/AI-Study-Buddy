@@ -32,8 +32,8 @@
             <div id="conversations-sidebar">
                 <h3>Previous Chats</h3>
                 <ul class="conversations-list">
-                    {% for chat in conversations %}
-                        <li><a href="#">{{ chat.title }}</a></li>
+                    {% for chat in chats %}
+                        <li><a href="{% url 'chat_detail' chat_id=chat.id %}">{{ chat.title }}</a></li>
                     {% endfor %}
                 </ul>
             </div>
@@ -42,15 +42,21 @@
 
             <!-- CHAT WINDOW -->
             <div class="chat-window">
-                <div class="message bot-message">
-                    Welcome to our Chatbot! How can I assist you today?
-                </div>
-                <div class="message user-message">
-                    Hi there! I need some help with my account.
-                </div>
-                <!-- More messages here -->
-
                 <div class="chat-input-area">
+                    {% for message in chat_messages %}
+                        {% if message.is_human %}
+                            <div class="message user-message">
+                                {{ message.text }}
+                            </div>
+                        {% endif %}
+
+                        {% if not message.is_human %}
+                            <div class="message bot-message">
+                                {{ message.text }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
                     <input type="text" id="user-input" placeholder="Type your message here..." />
                     <button id="send-button">Send</button>
                 </div>
@@ -71,7 +77,7 @@
                                     {% for file in course.files %}
                                     <div style="margin-bottom: 2%;">
                                         <label>
-                                            <input type="checkbox" value="{{file.id }}" class="select_files" />
+                                            <input type="checkbox" value="{{ file.id }}" class="select_files" />
                                             <a style="text-decoration: none;" href="{{ file.url }}" target="_blank">{{ file.name }}</a>
                                         </label>
                                     </div>
