@@ -13,13 +13,14 @@ class UserProfile(models.Model):
 
 
 class Course(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     external_id = models.CharField(unique=True, max_length=20)
     name = models.CharField(max_length=300)
 
 
 class CourseFile(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    external_id = models.CharField(unique=True, max_length=20)
+    external_id = models.CharField(unique=False, max_length=20)
     name = models.CharField(max_length=300)
     url = models.URLField()
     pages = models.BinaryField(blank=True, null=True)
@@ -37,6 +38,7 @@ class CourseFile(models.Model):
 
 
 class Conversation(models.Model):
+    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     title = models.CharField(max_length=300)
     vector_index = models.BinaryField(null=True, blank=True)
 

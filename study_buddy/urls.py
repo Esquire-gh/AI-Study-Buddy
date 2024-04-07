@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from chat.views import login, chat_interface, load_canvas_course_files
+from chat.views import login, chat_interface, load_canvas_course_files, tokenize_selected_files
 
 
 admin.site.site_url = '/chat'
@@ -26,5 +26,6 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", login),
     path("chat/", chat_interface),
-    path('load-course-files/', load_canvas_course_files),
+    path("load-course-files/", load_canvas_course_files),
+    path("tokenize-files/", tokenize_selected_files),
 ]
