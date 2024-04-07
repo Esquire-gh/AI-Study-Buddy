@@ -344,6 +344,7 @@ body {
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
     position: relative;
+    width: fit-content;
     height: 80vh;
     overflow: scroll;
 
@@ -380,4 +381,6 @@ body {
     100% { transform: rotate(360deg); }
 }
 
-
+.wait {
+    cursor: wait;
+  }

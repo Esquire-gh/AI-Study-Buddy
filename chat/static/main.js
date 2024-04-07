@@ -59,21 +59,27 @@ $(document).ready(function() {
 });
 
 
-document.getElementById('load-pdf-button').addEventListener('click', function() {
-    // Show the beachball
-    document.getElementById('beachball-container').classList.remove('hidden');
-    document.getElementById("load-pdf-button").disabled = true
-    document.getElementById("send-button").disabled = true
-    document.getElementById("update-convo-context").disabled = true
-   
 
-    // Simulate loading process (e.g., fetching data)
-    setTimeout(() => {
-        // Hide the beachball after 3 seconds
-        document.getElementById('beachball-container').classList.add('hidden');
-        document.getElementById("load-pdf-button").disabled = false
-        document.getElementById("send-button").disabled = false
-        document.getElementById("update-convo-context").disabled = false
-        
+document.getElementById('load-pdf-button').addEventListener('click', function() {
+    // Add the wait cursor class to the body
+    document.body.classList.add('wait');
+
+    // Simulate a background operation with setTimeout
+    setTimeout(function() {
+        // Remove the wait cursor class after 3 seconds
+        document.body.classList.remove('wait');
     }, 3000);
 });
+
+document.getElementById("update-convo-context").addEventListener('click', function() {
+    // Add the wait cursor class to the body
+    document.body.classList.add('wait');
+
+    // Simulate a background operation with setTimeout
+    setTimeout(function() {
+        // Remove the wait cursor class after 3 seconds
+        document.body.classList.remove('wait');
+    }, 3000);
+});
+
+
