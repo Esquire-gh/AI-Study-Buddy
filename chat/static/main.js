@@ -42,7 +42,7 @@ $(document).ready(function() {
         if (chat_id == "chat" || chat_id == "") {
             chat_id = "new"
         }
-        var endpoint = (input, chat_id) => `tokenize-files?file_ids=${input}&chat_id=${chat_id}`;
+        var endpoint = (input, chat_id) => `/tokenize-files?file_ids=${input}&chat_id=${chat_id}`;
 
        $.ajax({
             url: endpoint(selectedFiles.join(), chat_id),
