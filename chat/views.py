@@ -81,6 +81,9 @@ def tokenize_selected_files(request):
             user=request.user,
             title="temp_title"
         )
+        chat.title = f"chat - {chat.id}"
+        chat.save(update_fields=["title"])
+        chat.refresh_from_db
     else:
         chat  = Conversation.objects.get(id=int(chat_id))
     
@@ -89,7 +92,7 @@ def tokenize_selected_files(request):
 
 
 def chat_interface(request):
-    chats = Conversation.objects.filter(user=request.user).values("id", "title")
+    chats = Conversation.objects.filter(user=request.user).order_by("-id").values("id", "title")
     courses = Course.objects.prefetch_related('coursefile_set').filter(user=request.user).all()
 
     course_files = get_course_files(courses)
@@ -104,7 +107,7 @@ def chat_interface(request):
 
 
 def chat_detail(request, chat_id):
-    all_chats = Conversation.objects.filter(user=request.user).values("id", "title")
+    all_chats = Conversation.objects.filter(user=request.user).order_by("-id").values("id", "title")
     current_chat = Conversation.objects.get(id=chat_id) #TODO make better
     courses = Course.objects.prefetch_related('coursefile_set').filter(user=request.user).all()
 
@@ -133,6 +136,9 @@ def get_chatbot_response(request):
             user=request.user,
             title="fresh chat created"
         )
+        chat.title = f"chat - {chat.id}"
+        chat.save(update_fields=["title"])
+        chat.refresh_from_db
     else:
         chat = Conversation.objects.get(id=chat_id)
     
@@ -218,5 +224,7 @@ def new_chat(request):
         user=request.user,
         title="new_chat_temp_name"
     )
-
+    chat.title = f"chat - {chat.id}"
+    chat.save(update_fields=["title"])
+    chat.refresh_from_db
     return redirect('chat_detail', chat_id=chat.id)
