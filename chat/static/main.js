@@ -8,28 +8,9 @@ function toggleAccordion(event, panelId) {
     }
 }
 
-document.getElementById('load-pdf-button').onclick = function() {
-    document.getElementById('pdf-modal').style.display = 'block';
-};
-
 // Close the modal
 document.getElementsByClassName('close-button')[0].onclick = function() {
     document.getElementById('pdf-modal').style.display = 'none';
-};
-
-// Load the selected PDF into the iframe
-document.getElementById('pdf-file-input').onchange = function(event) {
-    var selectedFile = event.target.files[0];
-    var reader = new FileReader();
-
-    reader.onload = function(e) {
-        var pdfDisplay = document.getElementById('pdf-display');
-        pdfDisplay.style.display = 'block';
-        pdfDisplay.src = e.target.result;
-        document.getElementById('pdf-modal').style.display = 'none';
-    };
-
-    reader.readAsDataURL(selectedFile);
 };
 
 document.getElementById('send-button').onclick = function() {
@@ -42,3 +23,54 @@ document.getElementById('send-button').onclick = function() {
         document.getElementById('user-input').value = '';
     }
 };
+
+
+// load courses and files from canvas
+$(document).ready(function() {
+    $('#load-pdf-button').click(function() {
+        $.ajax({
+        url: '/load-course-files',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            var content = '';
+
+            var accordionSubItem = (fileId, fileName) => `
+                <label>
+                    <p>
+                        <input type="checkbox" name="${fileId}" />
+                        <span>${fileName}</span>
+                    </p>
+                </label>
+            `
+            var accordionItem = (courseId, courseName, accordionSubItems) => `
+            <div class="accordion-item">
+                <button class="accordion-button" onclick="toggleAccordion(event, '${courseId}')">${courseName}</button>
+                <div class="panel" id="${courseId}">
+                ${accordionSubItems}
+                </div>
+            </div>
+            `
+            // Iterate over each item in the array
+            $.each(data.course_files, function(index, course) {
+                // Construct HTML for each 
+                
+                var fileTemplates = ''
+                $.each(course.files, function(index, file) {
+                    // Construct HTML for each 
+                    fileTemplates += accordionSubItem(file.id, file.name)
+                });
+
+                content += accordionItem(course.id, course.name, fileTemplates)
+            });
+
+            // Update the modal's content and show it
+            $('#canvas-courses-accordion').html(content);
+            $('#pdf-modal').modal('show');
+        },
+        error: function(error) {
+            console.error("Error fetching data: ", error);
+        }
+        });
+    });
+});

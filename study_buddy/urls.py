@@ -16,10 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from chat.views import login, chatbox
+from chat.views import login, chat_interface, load_canvas_course_files
+
+
+admin.site.site_url = '/chat'
+admin.site.site_header = 'AI Study Buddy'
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", login),
-    path("chat/", chatbox)
+    path("chat/", chat_interface),
+    path('load-course-files/', load_canvas_course_files),
 ]
