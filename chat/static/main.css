@@ -4,20 +4,22 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%
     
 }
 
 .navbar {
-    background-color: #333;
-    color: white;
-    padding: 10px;
+    background-color: #296cba;
+    color: #eef3ef;
+    padding: 5px;
     text-align: center;
 }
 
 .container {
     display: flex;
     flex-grow: 1;
+    background-color: #f4f4f4;
+
 }
 
 #conversation-window {
@@ -43,8 +45,8 @@ body {
 .chat-window {
     flex-grow: 1;
     padding: 2%;
-    border-left: 1px solid #ddd;
-    border-right: 1px solid #ddd;
+    /* border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd; */
     position: relative;
     height: 90%;
     overflow: scroll;
@@ -73,14 +75,15 @@ body {
 #right-sidebar {
     display: flex;
     flex-direction: column;
-    flex-basis: 25%;
+    flex-basis: 30%;
     overflow: scroll;
     flex-grow: 1;
+    background-color: #f4f4f4;
 }
 
 
 .accordion-button {
-    background-color: #eee;
+    background-color: #f4f4f4;
     color: #444;
     cursor: pointer;
     padding: 10px;
@@ -89,11 +92,12 @@ body {
     border: none;
     outline: none;
     transition: 0.4s;
+    border-width: 2px;
 
 }
 
 .active, .accordion-button:hover {
-    background-color: #ccc; 
+    background-color: #f4f4f4;; 
     
 }
 
@@ -129,18 +133,17 @@ body {
 }
 
 .sidebar {
-    /* Adjust this value as needed for overall layout balance */
     flex-basis: 15%;
-    background-color: #f4f4f4;
     padding: 10px;
     overflow: scroll;
+    max-height: fit-content;
 
 }
 
 #conversations-sidebar {
-    flex-basis: 20%; /* Adjust the width as needed */
+    flex-basis: 20%;
     background-color: #fdfdfd;
-    border-right: 2px solid #eaeaea;
+    /* border-right: 2px solid #eaeaea; */
     padding: 15px;
     overflow: auto;
 }
@@ -154,12 +157,14 @@ body {
     list-style: none;
     padding: 0;
     margin: 0;
+    background-color: #f4f4f4;
 }
 
 .conversations-list li a {
     display: block;
     padding: 10px;
     text-decoration: none;
+    font-size: small;
     color: #555;
     border-bottom: 1px solid #eaeaea;
     transition: background-color 0.3s, color 0.3s;
@@ -181,7 +186,7 @@ body {
     display: block;
     margin: 10px 0;
     padding: 10px 15px;
-    background-color: #d0474c;
+    background-color: #cf1a3c;
     color: white;
     border: none;
     border-radius: 5px;
@@ -215,16 +220,6 @@ body {
     background-color: rgba(0,0,0,0.4);
 }
 
-/* Modal Content */
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 90%;
-    border-radius: 5px;
-}
-
 /* The Close Button */
 .close-button {
     color: #aaa;
@@ -243,8 +238,8 @@ body {
 .chat-input-area {
     position: absolute;
     bottom: 0;
-    background-color: #fff;
-    border-top: 1px solid #ddd;
+    background-color: #f4f4f4;
+    /* border-top: 1px solid #ddd; */
     display: flex;
     width: inherit;
     overflow: hidden;
@@ -264,7 +259,7 @@ body {
 
 #send-button {
     padding: 2%;
-    background-color: #4CAF50;
+    background-color: #296cba;
     color: white;
     border: none;
     border-radius: 5px;
@@ -351,8 +346,7 @@ body {
 }
 
 .previous-chats{
-    background-color: #eee;
-    color: #444;
+    /* color: #f4f4f4; */
     cursor: pointer;
     padding: 10px;
     width: 100%;
@@ -360,7 +354,7 @@ body {
     border: none;
     outline: none;
     transition: 0.4s;
-
+    background-color:#f4f4f4;
 
 }
 .hidden {
@@ -384,3 +378,8 @@ body {
 .wait {
     cursor: wait;
   }
+
+.accordion-item{
+    background-color: blue;
+}
+

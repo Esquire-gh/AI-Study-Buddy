@@ -27,7 +27,7 @@
                     <h3>Previous Chats</h3>
                     {% for chat in chats %}
                         {% if chat.id == current_chat_id %}
-                        <li style="background-color: beige;"><a href="{% url 'chat_detail' chat_id=chat.id %}">{{ chat.title }}</a></li>
+                        <li style="background-color:#e7f3fe;"><a href="{% url 'chat_detail' chat_id=chat.id %}">{{ chat.title }}</a></li>
                         {% else %}
                         <li><a href="{% url 'chat_detail' chat_id=chat.id %}">{{ chat.title }}</a></li>
                         {% endif %}
@@ -65,7 +65,7 @@
             <!-- END OF CHAT WINDOW -->
 
             <!-- CHAT CONTEXT LOADER -->
-            <div class="sidebar" id="right-sidebar">
+            <div class="sidebar" id="right-sidebar"">
                 <button id="load-pdf-button">Load Files from CANVAS</button>
 
                 <h3>Course Files</h3>
