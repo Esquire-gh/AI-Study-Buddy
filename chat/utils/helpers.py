@@ -1,6 +1,7 @@
 import logging
 import requests
 import os
+import json
 
 from django.conf import settings
 
@@ -29,3 +30,32 @@ def get_openai_embeddings():
     from langchain_openai import OpenAIEmbeddings
 
     return OpenAIEmbeddings(openai_api_key=settings.OPENAI_API_KEY)
+
+
+def get_course_files(courses, chat=None):
+    course_files = []
+
+    for course in courses:
+        course_dict = {
+            "course_id": course.id,
+            "course_name": course.name,
+            "files": []
+        }
+
+        for file in course.coursefile_set.all():
+            selected = False
+
+            if chat and chat.indexed_file_ids and file.id in json.loads(chat.indexed_file_ids):
+                selected = True
+
+            course_dict["files"].append(
+                {
+                    "id": file.id,
+                    "name": file.name,
+                    "url": file.url,
+                    "selected": selected
+                }
+            )
+        course_files.append(course_dict)
+
+    return course_files

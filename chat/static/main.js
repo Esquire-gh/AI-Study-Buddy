@@ -31,6 +31,7 @@ $(document).ready(function() {
         var path = window.location.pathname;
         // Split the path into segments
         var segments = path.split('/');
+        segments.pop()
         // Get the chat_id
         var chat_id = segments.pop();
 

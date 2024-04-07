@@ -1,3 +1,4 @@
+import json
 import pickle
 from pathlib import Path
 from django.db import models
@@ -49,6 +50,7 @@ class Conversation(models.Model):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     title = models.CharField(max_length=300)
     vector_index = models.BinaryField(null=True, blank=True)
+    indexed_file_ids = models.CharField(max_length=300, null=True, blank=True)
 
     def _create_vector_from_docs(self, documents):
         from langchain_community.vectorstores import FAISS
@@ -92,6 +94,9 @@ class Conversation(models.Model):
         else:
             self.udpate_index(documents)
         
+        self.indexed_file_ids = str(json.dumps([file.id for file in files]))
+        self.save(update_fields=["indexed_file_ids"])
+        
         self.refresh_from_db()
         return self.vector_index
 
@@ -103,4 +108,3 @@ class Message(models.Model):
 
     def __str__(self):
         return self.text
-

@@ -18,6 +18,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.chains import create_retrieval_chain
 
 from chat.models import Course, CourseFile, Conversation, Message
+from chat.utils.helpers import get_course_files
 
 
 
@@ -91,25 +92,7 @@ def chat_interface(request):
     chats = Conversation.objects.filter(user=request.user).values("id", "title")
     courses = Course.objects.prefetch_related('coursefile_set').filter(user=request.user).all()
 
-    course_files = []
-
-    for course in courses:
-        course_dict = {
-            "course_id": course.id,
-            "course_name": course.name,
-            "files": []
-        }
-
-        for file in course.coursefile_set.all():
-            course_dict["files"].append(
-                {
-                    "id": file.id,
-                    "name": file.name,
-                    "url": file.url
-                }
-            )
-
-        course_files.append(course_dict)
+    course_files = get_course_files(courses)
 
     context = {
         "chats": chats,
@@ -127,25 +110,7 @@ def chat_detail(request, chat_id):
 
     messages = [{'text': msg.text, "is_human": msg.is_human} for msg in current_chat.message_set.order_by('id')]
 
-    course_files = []
-
-    for course in courses:
-        course_dict = {
-            "course_id": course.id,
-            "course_name": course.name,
-            "files": []
-        }
-
-        for file in course.coursefile_set.all():
-            course_dict["files"].append(
-                {
-                    "id": file.id,
-                    "name": file.name,
-                    "url": file.url
-                }
-            )
-
-        course_files.append(course_dict)
+    course_files = get_course_files(courses, current_chat)
 
     context = {
         "chats": all_chats,

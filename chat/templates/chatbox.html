@@ -77,7 +77,11 @@
                                     {% for file in course.files %}
                                     <div style="margin-bottom: 2%; overflow: hidden;">
                                         <label>
-                                            <input type="checkbox" value="{{file.id }}" class="select_files" />
+                                            {% if file.selected %}
+                                                <input type="checkbox" value="{{file.id }}" class="select_files" checked/>
+                                            {% else %}
+                                                <input type="checkbox" value="{{file.id }}" class="select_files"/>
+                                            {% endif %}
                                             <a style="text-decoration: none;" href="{{ file.url }}" target="_blank">{{ file.name|truncatechars:35 }}</a>
                                         </label>
                                     </div>
