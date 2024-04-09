@@ -60,11 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
         chatWindow.appendChild(botMessageDiv);
         chatWindow.scrollTop = chatWindow.scrollHeight; // Auto-scroll to the latest message
     }
-
-    
-
-
- 
 });
 
 

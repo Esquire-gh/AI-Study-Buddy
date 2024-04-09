@@ -26,6 +26,7 @@ from chat.utils.helpers import get_course_files
 def login(request):
     return render(request, "login.html")
 
+
 @login_required
 def load_canvas_course_files(request):
     canvas_client = get_canvas_client(request.user)
@@ -54,7 +55,7 @@ def load_canvas_course_files(request):
                             "url": file["url"],
                         }
                     )
-    return JsonResponse({})
+    return JsonResponse({"response": "File loading successful!"})
 
 
 @login_required
@@ -62,13 +63,13 @@ def tokenize_selected_files(request):
     chat_id = request.GET.get("chat_id")
     file_ids = request.GET.get('file_ids')
     
-    if isinstance(file_ids, str):
+    if isinstance(file_ids, str) and file_ids != "":
         file_ids = [int(id) for id in file_ids.split(",")]
 
     files = CourseFile.objects.filter(id__in=file_ids)
 
     if not files:
-        return JsonResponse({"error": "Files not available"}, status=400)
+        return JsonResponse({"error": "No files Selected"}, status=400)
 
     for file in files:
         if not file.pages:
@@ -106,6 +107,7 @@ def chat_interface(request):
         "current_chat_id": None
     }
     return render(request, "chatbox.html", context=context)
+
 
 @login_required
 def chat_detail(request, chat_id):
