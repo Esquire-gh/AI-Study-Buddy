@@ -28,10 +28,14 @@ class CourseFile(models.Model):
     name = models.CharField(max_length=300)
     url = models.URLField()
     pages = models.BinaryField(blank=True, null=True)
+    local_file = models.FileField(upload_to='uploaded_files/', null=True, blank=True)
 
     def generate_pages(self):
         if not self.pages:
-            file_path = download_file(self.url, self.name)
+            if self.local_file:
+                file_path = self.local_file.path
+            else:
+                file_path = download_file(self.url, self.name)
                 
             if Path(file_path).exists():
                 loader = PyPDFLoader(file_path, extract_images=True)
@@ -54,12 +58,13 @@ class Conversation(models.Model):
 
     def _create_vector_from_docs(self, documents):
         from langchain_community.vectorstores import FAISS
-
         return FAISS.from_documents(documents, get_openai_embeddings())
 
     def create_new_index(self, documents):
         v_index = self._create_vector_from_docs(documents)
         self.vector_index = v_index.serialize_to_bytes()
+        self.save(update_fields=['vector_index'])
+        return self.vector_index
 
     def get_vector_index(self):
         from langchain_community.vectorstores import FAISS
@@ -76,7 +81,7 @@ class Conversation(models.Model):
         old_index = self.get_vector_index()
 
         combined_index = old_index.merge_from(new_index)
-        self.vector_index = combined_index
+        self.vector_index = combined_index.serialize_to_bytes()
         self.save(udpate_fields=['vector_index'])
         return self.vector_index
     

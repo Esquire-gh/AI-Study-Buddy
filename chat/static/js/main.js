@@ -17,6 +17,21 @@ function toggleDisableKeyButtons(toggle) {
     });
 }
 
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 
 // PURE JS
 document.addEventListener('DOMContentLoaded', function() {
@@ -95,6 +110,43 @@ document.addEventListener('DOMContentLoaded', function() {
             toggleDisableKeyButtons(false);
         });
     });
+
+
+    $("#upload-local-file").click(function() {
+
+        document.getElementById('localFileInput').click();
+    })
+
+    $("#localFileInput").change(function() {
+
+        const csrftoken = getCookie('csrftoken');
+        const input = document.getElementById('localFileInput');
+        const file = input.files[0];
+
+        console.log(file)
+
+        if (file) {
+            let formData = new FormData();
+            formData.append('file', file);
+
+            fetch('/upload-local-file/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': csrftoken,
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.response) {
+                    window.alert(data.response)
+                    window.location.reload()
+                }else {
+                    window.alert("Error loading file")
+                }
+            })
+        }
+    })
 
     var chatHistory = document.getElementById("messageBody");
     chatHistory.scrollTop = chatHistory.scrollHeight;

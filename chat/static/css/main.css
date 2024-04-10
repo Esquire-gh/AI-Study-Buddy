@@ -182,6 +182,20 @@ body {
 /* Existing styles */
 
 /* Style for the Load PDF button */
+#upload-local-file {
+    display: block;
+    margin: 10px 0;
+    padding: 10px 15px;
+    background-color: #296cba;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#upload-local-file:disabled{
+    background-color: #6d6b6b;
+}
+
 #load-pdf-button {
     display: block;
     margin: 10px 0;
@@ -382,4 +396,3 @@ body {
 .accordion-item{
     background-color: blue;
 }
-

@@ -1,10 +1,6 @@
-import json
-import logging
-
 from django.shortcuts import render, redirect
 from chat.utils.canvas_client import get_canvas_client
 from django.http import JsonResponse
-from django.core.serializers import serialize
 from django.conf import settings
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
@@ -234,3 +230,21 @@ def new_chat(request):
     chat.save(update_fields=["title"])
     chat.refresh_from_db
     return redirect('chat_detail', chat_id=chat.id)
+
+
+def upload_local_file(request):
+    if request.method == 'POST':
+        file = request.FILES['file']
+        
+        course = Course.objects.get(external_id="custom_files")
+        CourseFile.objects.update_or_create(
+            course=course,
+            external_id=file.name,
+            defaults = {
+                "name": file.name,
+                "local_file": file
+            }
+        )
+
+        return JsonResponse({'response': 'File uploaded successfully'})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
