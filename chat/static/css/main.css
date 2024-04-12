@@ -46,6 +46,8 @@ html, body {
     border-right: 1px solid #ddd; */
     position: relative;
     flex-basis: 50%;
+    overflow: auto;
+    height: 85%;
 }
 
 /* Additional styling as needed */
@@ -253,8 +255,8 @@ html, body {
     width: inherit;
     overflow: hidden;
     padding: 2%;
+    padding-bottom: 5%;
     width: 95%;
-    margin-bottom: 5%;
 }
 
 #user-input {
@@ -351,7 +353,6 @@ html, body {
     position: relative;
     width: fit-content;
     height: 95%;
-    overflow-y: auto;
 }
 
 .previous-chats{
