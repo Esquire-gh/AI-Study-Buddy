@@ -1,11 +1,9 @@
-body {
+html, body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
-    display: flex;
-    flex-direction: column;
-    height: 100%
-    
+    height: 100%;
+    overflow-y: hidden;
 }
 
 .navbar {
@@ -16,15 +14,22 @@ body {
 }
 
 .container {
-    display: flex;
-    flex-grow: 1;
     background-color: #f4f4f4;
-
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
 }
+
+#main-content {
+    display: flex;
+    height: 100%;
+}
+
 
 #conversation-window {
     display: flex;
     width: 100%;
+    height: 100%;
 }
 
 #left-sidebar {
@@ -34,22 +39,12 @@ body {
     overflow-y: auto;
 }
 
-.sidebar {
-    flex-basis: 20%;
-    background-color: #f4f4f4;
-    padding: 10px;
-    overflow-y: auto;
-    height: 80vh;;
-}
-
 .chat-window {
     flex-grow: 1;
     padding: 2%;
     /* border-left: 1px solid #ddd;
     border-right: 1px solid #ddd; */
     position: relative;
-    height: 90%;
-    overflow: scroll;
     flex-basis: 50%;
 }
 
@@ -79,6 +74,7 @@ body {
     overflow: scroll;
     flex-grow: 1;
     background-color: #f4f4f4;
+    height: 100%;
 }
 
 
@@ -156,8 +152,7 @@ body {
 .conversations-list {
     list-style: none;
     padding: 0;
-    margin: 0;
-    background-color: #f4f4f4;
+    margin-top: 5%;
 }
 
 .conversations-list li a {
@@ -258,7 +253,8 @@ body {
     width: inherit;
     overflow: hidden;
     padding: 2%;
-    width: 90%
+    width: 95%;
+    margin-bottom: 5%;
 }
 
 #user-input {
@@ -347,16 +343,15 @@ body {
 .btn-success:focus, .btn-success.focus {
     box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.5); /* Focus shadow */
 }
+
 .chat-window-container {
     flex-grow: 1;
-    padding: 2%;
     border-left: 1px solid #ddd;
     border-right: 1px solid #ddd;
     position: relative;
     width: fit-content;
-    height: 80vh;
-    overflow: scroll;
-
+    height: 95%;
+    overflow-y: auto;
 }
 
 .previous-chats{

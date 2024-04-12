@@ -10,68 +10,72 @@
         />
 </head>
 <body>
-    <nav class="navbar">
-        <h1>AI Study Buddy</h1>
-    </nav>
-
     <div class="container">
+        <nav class="navbar">
+            <h1>AI Study Buddy</h1>
+        </nav>
 
         <!-- CONVERSATION WINDOW -->
-        <div id="conversation-window">
-            <!-- PREVIOUS CONVERSATIONS -->
-            <div id="conversations-sidebar">
-                <h3>New Study</h3>
-                <h3>  <a href="{% url 'new_chat'%}"><button class="previous-chats">New Chat</button></a> </h3>
-
-                <ul class="conversations-list">
+        <div id="main-content">
+            <div id="conversation-window">
+                <!-- PREVIOUS CONVERSATIONS -->
+                <div id="conversations-sidebar">
+                    <h3>New Study</h3>
+                    <h3>  <a href="{% url 'new_chat'%}"><button class="previous-chats">New Chat</button></a> </h3>
+    
                     <h3>Previous Chats</h3>
-                    {% for chat in chats %}
-                        {% if chat.id == current_chat_id %}
-                        <li style="background-color:#e7f3fe;"><a href="{% url 'chat_detail' chat_id=chat.id %}">{{ chat.title }}</a></li>
-                        {% else %}
-                        <li><a href="{% url 'chat_detail' chat_id=chat.id %}">{{ chat.title }}</a></li>
-                        {% endif %}
+                    <ul class="conversations-list">
+                        {% for chat in chats %}
+                            {% if chat.id == current_chat_id %}
+                            <li style="background-color:#e7f3fe;"><a href="{% url 'chat_detail' chat_id=chat.id %}">{{ chat.title }}</a></li>
+                            {% else %}
+                            <li><a href="{% url 'chat_detail' chat_id=chat.id %}">{{ chat.title }}</a></li>
+                            {% endif %}
+                            {% endfor %}
+                    </ul>
+    
+                    <!-- <div style="position: absolute; bottom: 0;">
+                        Logout
+                    </div> -->
+                </div>
+                <!-- END OF PREVIOUS CONVERSATIONS -->
+    
+    
+                <!-- CHAT WINDOW -->
+                <div class="chat-window-container"> 
+                    <div id="messageBody" class="chat-window">
+                        {% for message in chat_messages %}
+                                {% if message.is_human %}
+                                    <div class="message user-message">
+                                        {{ message.text }}
+                                    </div>
+                                {% endif %}
+    
+                                {% if not message.is_human %}
+                                    <div class="message bot-message">
+                                        {{ message.text }}
+                                    </div>
+                                {% endif %}
                         {% endfor %}
-                </ul>
-            </div>
-            <!-- END OF PREVIOUS CONVERSATIONS -->
-
-
-            <!-- CHAT WINDOW -->
-            <div class="chat-window-container"> 
-                <div id="messageBody" class="chat-window">
-                    {% for message in chat_messages %}
-                            {% if message.is_human %}
-                                <div class="message user-message">
-                                    {{ message.text }}
-                                </div>
-                            {% endif %}
-
-                            {% if not message.is_human %}
-                                <div class="message bot-message">
-                                    {{ message.text }}
-                                </div>
-                            {% endif %}
-                    {% endfor %}
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="user-input" placeholder="Type your message here..." />
+                        <button id="send-button" class="keyButton">Send</button>
+                    </div>
                 </div>
-                <div class="chat-input-area">
-                    <input type="text" id="user-input" placeholder="Type your message here..." />
-                    <button id="send-button" class="keyButton">Send</button>
-                </div>
+    
             </div>
-
-            </div>
-            
+                
             <!-- END OF CHAT WINDOW -->
-
+    
             <!-- CHAT CONTEXT LOADER -->
             <div class="sidebar" id="right-sidebar">
                 <input type="file" id="localFileInput" accept=".pdf" hidden/>
                 <button id="upload-local-file" class="keyButton">Upload Local File</button>
-
-
+    
+    
                 <button id="load-pdf-button" class="keyButton">Load Files from CANVAS</button>
-
+    
                 <h3>Course Files</h3>
                 <div class="accordion">
                     {% for course in course_files %}
@@ -94,10 +98,10 @@
                         </div>
                     {% endfor %}
                 </div>
-
+    
                 <button id="update-convo-context" class="keyButton">Update Context</button>
             </div>
-            <!-- END OF CHAT CONTEXT LOADER -->
+                <!-- END OF CHAT CONTEXT LOADER -->
         </div>
     </div>
 
